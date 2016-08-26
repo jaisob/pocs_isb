@@ -3,8 +3,11 @@ spring:
     name: data
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: validate
     properties.hibernate.default_schema: test
   datasource:
+    platform: postgresql
     url: jdbc:postgresql://localhost:5432/BED_CTBP
     username: postgres
     password: toledo   

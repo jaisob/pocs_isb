@@ -2,10 +2,8 @@ package com.jaime.jpa.data.service.agents.repository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity()
-@Table(name = "agents")
 public class Agent {
 	
 	@Id
