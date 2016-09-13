@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+
+<setup>
+
+    <import class="project.ebd.EventConsumer"/>
+    <import class="org.databene.platform.java.JavaInvoker"/>
+    <import class="org.databene.benerator.distribution.function.*"/>
+    <import defaults="true" domains="person,address,finance" />
+
+    <!-- bean id="dateTimeGen" class="DateTimeGenerator">
+        <property name="minDate" value="2014-11-28"/>
+        <property name="maxDate" value="2015-01-28"/>
+        <property name="dateDistribution" value="random"/>
+        <property name="minTime" value="15:00:00"/>
+        <property name="maxTime" value="23:59:00"/>
+        <property name="timeGranularity" value="00:00:01"/>
+        <property name="timeDistribution" value="random"/>
+    </bean-->
+    
+    <bean id="dateTime" class="DateTimeGenerator">
+        <property name="minDate" value="2015-11-28"/>
+        <property name="maxDate" value="2016-06-28"/>
+        <property name="dateDistribution" value="random"/>
+        <property name="minTime" value="09:00:00"/>
+        <property name="maxTime" value="18:59:00"/>
+        <property name="timeGranularity" value="00:00:01"/>
+        <property name="timeDistribution" value="random"/>
+    </bean>
+    
+    <bean id="serviceEvent" spec="new EventConsumer('localhost', 6379)"/>
+    <bean id="consumerEvent" spec="new JavaInvoker(serviceEvent, 'write')"/>
+
+    <generate type="eventRegister" count="250" consumer="consumerEvent">
+    
+        <variable name="person" generator="org.databene.domain.person.PersonGenerator" dataset="ES" locale="es"/>
+     	<variable name="address" generator="org.databene.domain.address.AddressGenerator" dataset="US" locale="us"/>
+     	<variable name="company" generator="org.databene.domain.organization.CompanyNameGenerator" dataset="US" locale="us"/>
+     	<variable name="country" generator="org.databene.domain.address.CountryGenerator"/>
+     	
+     
+        <attribute name="dateTimeProcessed" type="date" generator="dateTime"/>
+        <attribute name="client" type="string" script="person.givenName + ' ' + person.familyName"/>
+        <attribute name="street" type="string" script="address.street"/>
+        <attribute name="postalCode" type="string" script="address.postalCode"/>
+        <attribute name="city" type="string" script="address.city"/>
+        <attribute name="country" type="string" script="country.isoCode"/>
+        <attribute name="phone" type="string" script="address.privatePhone"/>      
+        <attribute name="ipClient" type="string" pattern="84\.[0-2][0-5][0-5]\.[0-2][0-5][0-5]\.[0-2][0-5][0-5]"/>
+        <attribute name="ipServer" type="string" pattern="192\.168\.0\.[0-2][0-5][0-5]"/>
+        
+        <!-- attribute name="dateTimeEvent" type="date" generator="dateTimeGen"/>
+        <attribute name="typeEvent" type="string" pattern="(DELETE|PATCH|TRANSFER|POST|GET|PUT|LOG)" distribution="new DiscreteFunction(5,100,10,500,400,30,200)"/>
+        <attribute name="application" type="string" pattern="(R_SERVER|JAR_APPLICATION|ANALYSIS_SERVER|QUEUE_SERVER|LOGGIN_SERVER|WEB_SERVER|MOODLE_SERVER_1|MOODLE_SERVER_2)" distribution="new DiscreteFunction(1,200,30,100,400,500,10,500)"/>        
+        <attribute name="cpuUse" type="int" min="1" max="100" granularity="1" distribution="new GaussianFunction(50,20)"/>
+        <attribute name="memoryUse" type="int" min="1" max="100" granularity="1" distribution="new GaussianFunction(50,20)"/>
+        <attribute name="networkStatus" type="string" pattern="(OFFLINE|ONLINE)" distribution="new DiscreteFunction(1,10000)"/>
+        <attribute name="networkTraffic" type="int" min="0" max="100000"/>
+        <attribute name="operatingSystem" type="string" pattern="(OSX_LION|OSX_YOSEMITE|OSX_MAVERICKS|OSX_YOSEMITE|WINDOWS_7|WINDOWS_8|WINDOWS_SERVER|LINUX_CENTOS|LINUX_UBUNTU)" distribution="new DiscreteFunction(10,100,2,400,50,500,300,50,200)"/>
+        <attribute name="systemError" type="string" pattern="(N|Y)" distribution="new DiscreteFunction(10000,1)"/>		
+ 		<attribute name="company" type="string" script="company.shortName + ' ' + company.legalForm"/-->
+ 		
+ 		
+ 		
+ 		
+    </generate>
+</setup>

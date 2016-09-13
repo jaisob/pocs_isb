@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="DEV_HOME" value="c:/temp/logs" />
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{ISO8601} %level %logger{0}[%thread] - %msg%n
+				<!--%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{36} - %msg%n -->
+				<!--%d{ISO8601} %-5.5p [%-15.15t] %-25.25c - %m%n -->
+			</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${DEV_HOME}/debug.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{ISO8601} %-5.5p [%-15.15t] %-25.25c - %m%n</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${DEV_HOME}/debug.%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="logstash_tcp"
+		class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<destination>127.0.0.1:5000</destination>
+
+		<!-- encoder is required -->
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+	</appender>
+
+	<appender name="logstash_redis" class="com.cwbase.logback.RedisAppender">
+		<type>myApplication</type>
+		<host>localhost</host>
+		<port>6379</port>
+		<key>logstash</key>
+		<timeout>5000</timeout>
+	</appender>
+	<appender name="logstash_redis_async" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="logstash_redis" />
+	</appender>
+
+	<!-- Our logger writes to file, console and sends the data to Logstash -->
+	<logger name="com.jaime.logs" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="logstash_tcp" />
+		<appender-ref ref="logstash_redis_async" />
+	</logger>
+	<root level="info">
+		<appender-ref ref="CONSOLE" />
+	</root>
+</configuration>
