@@ -1,12 +1,15 @@
 package com.jaime.jpa.data.service.agents.repository;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity()
 public class Agent {
 	
 	@Id
+	@GeneratedValue
+	private String id;
 	private String agent;
 	private String place_id;
 	
